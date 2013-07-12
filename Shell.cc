@@ -12,8 +12,12 @@ Shell::Shell(int maxOc,string name) : _MaxOccupancy(maxOc), _ShellName(name){
   _Occupancy=0;
 }
 
-Shell::~Shell()
-{;}
+Shell::~Shell(){
+  _MaxOccupancy=-1;
+  _Occupancy=-1;
+  _ShellName="***";
+
+}
 
 bool Shell::IsFull(){
   if ( _Occupancy >= _MaxOccupancy )

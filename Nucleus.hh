@@ -2,11 +2,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 #include "Shell.hh"
+#include "State.hh"
 using namespace std;
 
 
-class Nucleus {
+class Nucleus : public State{
 
 public:
 
@@ -23,6 +25,12 @@ private:
   int A;//Mass number
   int Z;//Charge
   void DefineShells();
+  void DefineShellClosures();
+  
+  map <int,int> theShellClosures;
+
+  void DrawShell(Shell&,string);
+
   vector <Shell> theShellOrder;
   vector <Shell> theProtonShells;
   vector <Shell> theNeutronShells;
