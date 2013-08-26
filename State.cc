@@ -7,11 +7,11 @@ using namespace std;
 
 State::State(int a, int z) : _A(a), _Z(z){
   _IsoSpinZ=((_A-_Z) -_Z)/2.0;
-  
+
   _IsoSpin=0;
 
-  cout<<"iso spin z "<<_IsoSpinZ<<endl;
-  cout<<"iso spin "<<_IsoSpin<<endl;
+  //  cout<<"iso spin z "<<_IsoSpinZ<<endl;
+  //  cout<<"iso spin "<<_IsoSpin<<endl;
 }
 
 
