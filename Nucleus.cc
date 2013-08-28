@@ -256,26 +256,32 @@ int Nucleus::GetNextShellClosure(int theClosure){
   
   
 }
+Shell Nucleus::GetZShell(int NumNucleons){
+  return GetShell(NumNucleons,theProtonShells);
+}
+Shell Nucleus::GetNShell(int NumNucleons){
+  return GetShell(NumNucleons,theNeutronShells);
+}
 
-Shell Nucleus::GetShell(int NumNucleons){
+Shell Nucleus::GetShell(int NumNucleons,vector<Shell>& Shells){
 
   int spot =-1;
   int total = 0;
 
-  for (int i=0;i<theShellOrder.size();i++){
+  for (int i=0;i<Shells.size();i++){
 
     if ( NumNucleons > total && 
-	 NumNucleons <=total+ theShellOrder[i].GetMaxOccupancy()){
+	 NumNucleons <=total+ Shells[i].GetMaxOccupancy()){
       spot =i;
     }
-    total = total + theShellOrder[i].GetMaxOccupancy();
+    total = total + Shells[i].GetMaxOccupancy();
   }
 
   if (spot== -1){
     throw "Crap";
   }
 
-  return theShellOrder[spot];
+  return Shells[spot];
 }
 
 int Nucleus::GetShellIndex(int NumNucleons){
@@ -284,7 +290,7 @@ int Nucleus::GetShellIndex(int NumNucleons){
   // order where that shell is
 
 
-  Shell theShell = GetShell(NumNucleons);
+  Shell theShell = GetZShell(NumNucleons);//N vs Z here does not matter
   int spot=-1;
   
   for (int i=0;i<theShellOrder.size();i++){

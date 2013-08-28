@@ -26,7 +26,7 @@ public:
   inline vector<Shell> GetNeutronShells(){return theNeutronShells;}
 
   void Draw();
-  
+
   inline int GetA(){return A;}
   inline int GetZ(){return Z;}
 
@@ -36,7 +36,10 @@ public:
   vector <Shell> GetModelSpaceNShells();
   
   void PrintModelSpaces();
-  Shell GetShell(int NumNucleons);
+  Shell GetZShell(int NumNucleons);
+
+  Shell GetNShell(int NumNucleons);
+
   int GetShellIndex(int NumNucleons);
 
   void DumpShellClosureMap();
@@ -46,7 +49,7 @@ private:
   void DefineShells();
   void DefineShellClosures();
 
-
+  Shell GetShell(int NumNucleons,vector<Shell>&);
 
   map <int,int> theShellClosures;
 
