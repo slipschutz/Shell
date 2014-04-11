@@ -11,10 +11,12 @@ Shell::Shell(){
   _J=1/2.0;
   _l=0;
   _n=1;
+  _ShellGroupIndex=1;
 }
 
-Shell::Shell(int maxOc,string name,double j,double l, double n) :
-  _MaxOccupancy(maxOc), _ShellName(name),_J(j/2.0),_l(l),_n(n){
+Shell::Shell(int maxOc,string name,double j,double l, double n,int i) :
+  _MaxOccupancy(maxOc), _ShellName(name),_J(j/2.0),_l(l),_n(n),_ShellGroupIndex(i)
+{
   _Occupancy=0;
   _Fullness =0;
   _Emptiness=1;

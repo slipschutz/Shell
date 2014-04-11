@@ -16,14 +16,17 @@ class Nucleus : public State{
 
 public:
 
-  Nucleus();
-  Nucleus(int a,int z);
-  virtual ~Nucleus();
+  Nucleus(); //Constructor defualts to A=-1 and Z=-1
+  Nucleus(int a,int z);//Constructor for given A and Z
+  Nucleus(int a,string s);
+  virtual ~Nucleus(); //Deconstructor 
 
-  void SetAZ(int a,int z){A=a;Z=z;this->State::SetAZ(a,z);Fill();}
+  void SetAZ(int a,int z){A=a;Z=z;this->State::SetAZ(a,z);Fill();}//Set A and Z 
 
-  inline vector<Shell> GetProtonShells(){return theProtonShells;}
-  inline vector<Shell> GetNeutronShells(){return theNeutronShells;}
+  
+  
+  vector <Shell>* GetProtonShells(){return &theProtonShells;}//Returns the P Shells
+  vector <Shell>* GetNeutronShells(){return &theNeutronShells;}//Returns the N Shells
 
   void Draw();
 
@@ -36,24 +39,37 @@ public:
   vector <Shell> GetModelSpaceNShells();
   
   void PrintModelSpaces();
-  Shell GetZShell(int NumNucleons);
-
-  Shell GetNShell(int NumNucleons);
-
+  Shell* GetZShell(int NumNucleons);//returns the shell in which the NumNucleons nucleon appears
+  Shell* GetZShell(string name);
+  Shell* GetNShell(int NumNucleons);//returns the shell in which the NumNucleons nucleon appears
+  Shell* GetNShell(string name);
   int GetShellIndex(int NumNucleons);
 
   void DumpShellClosureMap();
+
+#ifndef __CINT__
+  inline map <pair<string,string>,double>* GetTheZCoefs(){return &theZCoefs;}
+#endif
+
 private:
   int A;//Mass number
   int Z;//Charge
   void DefineShells();
   void DefineShellClosures();
+  
+  void DefineAbrevMap();
 
-  Shell GetShell(int NumNucleons,vector<Shell>&);
+  Shell *GetShell(int NumNucleons,vector<Shell>&);
+  Shell *GetShell(string name,vector<Shell>&);
 
   map <int,int> theShellClosures;
+  map <string,bool> _theDrawClosures;
 
+  map <string,int> AbrevMap;
 
+#ifndef __CINT__
+  map <pair<string,string>,double> theZCoefs; 
+#endif
 
   void DrawShell(Shell&,string);
 

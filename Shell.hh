@@ -11,7 +11,7 @@ class Shell : public TObject{
 
 public:
   Shell();
-  Shell(int maxOc,string name,double j,double l, double n);
+  Shell(int maxOc,string name,double j,double l, double n,int i);
   virtual ~Shell();
   
   bool IsFull();
@@ -25,6 +25,7 @@ public:
   inline double Getl(){return _l;}
   inline double Getn(){return _n;}  
   inline double GetN() {return 2*(_n-1)+_l;}
+  inline int GetShellGroup(){return _ShellGroupIndex;}
   void PushNucleon();
   void SetEmptiness(double o){_Emptiness=o;_Fullness=1-_Emptiness;}
   void SetFullness(double f){_Fullness=f;_Emptiness=1-_Fullness;}
@@ -35,6 +36,7 @@ private:
   double _Fullness;
   double _Emptiness;
   string _ShellName; 
+  int _ShellGroupIndex;
 
   double _J;
   double _l;

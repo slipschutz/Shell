@@ -12,11 +12,24 @@ Nucleus::Nucleus() : State(-1,-1){
 Nucleus::Nucleus(int a, int z) : State(a,z),A(a),Z(z){
   //  cout<<"Z is "<<Z<<endl;
   //  cout<<"A is "<<A<<endl;
+
   DefineShellClosures();
   DefineShells();
   Fill();
 }
+Nucleus::Nucleus(int a,string s) : State(0,0){
+  DefineAbrevMap();
+  std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 
+  DefineShellClosures();
+  DefineShells();
+  if (AbrevMap.count(s) != 0 )
+    SetAZ(a,AbrevMap[s]);
+  else{
+    cout<<"Element Not Found"<<endl;
+  }
+    
+}
 
 Nucleus::~Nucleus()
 {;}
@@ -32,33 +45,40 @@ void Nucleus::DefineShellClosures(){
 
     }
   }
-  
+
+  //  _theDrawClosures["2g9/2"]=true;
+  _theDrawClosures["1h9/2"]=true;
+  _theDrawClosures["1g7/2"]=true;
+  _theDrawClosures["1f7/2"]=true;
+  _theDrawClosures["1d5/2"]=true;
+  _theDrawClosures["1p3/2"]=true;
+
 }
 
 void Nucleus::DefineShells(){
   
-  theShellOrder.push_back(Shell(2,"1s1/2",1,0,1));
-  theShellOrder.push_back(Shell(4,"1p3/2",3,1,1));
-  theShellOrder.push_back(Shell(2,"1p1/2",1,1,1));
-  theShellOrder.push_back(Shell(6,"1d5/2",5,2,1));
-  theShellOrder.push_back(Shell(2,"2s1/2",1,0,2));
-  theShellOrder.push_back(Shell(4,"1d3/2",3,2,1));
-  theShellOrder.push_back(Shell(8,"1f7/2",7,3,1));
-  theShellOrder.push_back(Shell(4,"2p3/2",3,1,2));
-  theShellOrder.push_back(Shell(6,"1f5/2",5,3,1));
-  theShellOrder.push_back(Shell(2,"2p1/2",1,1,2));
-  theShellOrder.push_back(Shell(10,"1g9/2",9,4,1));
-  theShellOrder.push_back(Shell(8,"1g7/2",7,4,1));
-  theShellOrder.push_back(Shell(6,"2d5/2",5,2,2));
-  theShellOrder.push_back(Shell(4,"2d3/2",3,2,2));
-  theShellOrder.push_back(Shell(2,"3s1/2",1,0,3));
-  theShellOrder.push_back(Shell(12,"1h11/2",11,5,1));
-  theShellOrder.push_back(Shell(10,"1h9/2",9,5,1));
-  theShellOrder.push_back(Shell(8,"2f7/2",7,3,2));
-  theShellOrder.push_back(Shell(14,"1i13/2",13,6,1));
-  theShellOrder.push_back(Shell(4,"3p3/2",3,1,3));
-  theShellOrder.push_back(Shell(6,"2f5/2",5,3,2));
-  theShellOrder.push_back(Shell(2,"3p1/2",1,1,3));
+  theShellOrder.push_back(Shell(2,"1s1/2",1,0,1,1));
+  theShellOrder.push_back(Shell(4,"1p3/2",3,1,1,2));
+  theShellOrder.push_back(Shell(2,"1p1/2",1,1,1,2));
+  theShellOrder.push_back(Shell(6,"1d5/2",5,2,1,3));
+  theShellOrder.push_back(Shell(2,"2s1/2",1,0,2,3));
+  theShellOrder.push_back(Shell(4,"1d3/2",3,2,1,3));
+  theShellOrder.push_back(Shell(8,"1f7/2",7,3,1,4));
+  theShellOrder.push_back(Shell(4,"2p3/2",3,1,2,4));
+  theShellOrder.push_back(Shell(6,"1f5/2",5,3,1,4));
+  theShellOrder.push_back(Shell(2,"2p1/2",1,1,2,4));
+  theShellOrder.push_back(Shell(10,"1g9/2",9,4,1,4));
+  theShellOrder.push_back(Shell(8,"1g7/2",7,4,1,5));
+  theShellOrder.push_back(Shell(6,"2d5/2",5,2,2,5));
+  theShellOrder.push_back(Shell(4,"2d3/2",3,2,2,5));
+  theShellOrder.push_back(Shell(2,"3s1/2",1,0,3,5));
+  theShellOrder.push_back(Shell(12,"1h11/2",11,5,1,5));
+  theShellOrder.push_back(Shell(10,"1h9/2",9,5,1,6));
+  theShellOrder.push_back(Shell(8,"2f7/2",7,3,2,6));
+  theShellOrder.push_back(Shell(14,"1i13/2",13,6,1,6));
+  theShellOrder.push_back(Shell(4,"3p3/2",3,1,3,6));
+  theShellOrder.push_back(Shell(6,"2f5/2",5,3,2,6));
+  theShellOrder.push_back(Shell(2,"3p1/2",1,1,3,6));
 
 }
 
@@ -90,7 +110,7 @@ void Nucleus::Fill(){
   theNeutronShells = theShellOrder;
   
   for (int i=0;i<A-Z;i++){
-
+    
     if (theNeutronShells[ShellCountN].IsFull() ){
       ShellCountN++;
       i--;//Go back one to start with i on next shell
@@ -136,7 +156,7 @@ void Nucleus::DrawShell(Shell& theShell,string type){
       }
       
     }
-    cout<<"  "<<setw(8)<<theShell.GetName()<<" "<<theShell.GetJ()<<" "<<theShell.Getl()<<" "<<theShell.Getn();;
+    cout<<"  "<<setw(8)<<theShell.GetName();//<<" "<<theShell.GetJ()<<" "<<theShell.Getl()<<" "<<theShell.Getn();;
   }else { // print blank filler line
     for (int q=0;q<MaxLineChar;q++)
       cout<<"  ";
@@ -169,18 +189,17 @@ void Nucleus::Draw(){
 
     //    cout<<"count "<<count<<endl;
     //    cout<<"spot "<<spot<<endl;
+    
 
-    if ((Z-countZ) == spotZ )
-      DrawShell(theProtonShells[i],"P");
-    else
-      DrawShell(theProtonShells[i],"p");
+    DrawShell(theProtonShells[i],"p");
     cout<<" ";
-
-    if (( A-Z-countN) == spotN )
-      DrawShell(theNeutronShells[i],"N");
-    else
-      DrawShell(theNeutronShells[i],"n");
+    DrawShell(theNeutronShells[i],"n");
+        
     cout<<endl;
+    
+    if ( _theDrawClosures.count(theProtonShells[i].GetName())!=0){
+      cout<<"_________________"<<endl;
+    }
     countZ = countZ + theProtonShells[i].GetOccupancy();
     countN = countN + theNeutronShells[i].GetOccupancy();
 
@@ -256,14 +275,22 @@ int Nucleus::GetNextShellClosure(int theClosure){
   
   
 }
-Shell Nucleus::GetZShell(int NumNucleons){
+Shell* Nucleus::GetZShell(int NumNucleons){
   return GetShell(NumNucleons,theProtonShells);
 }
-Shell Nucleus::GetNShell(int NumNucleons){
+Shell *Nucleus::GetNShell(int NumNucleons){
   return GetShell(NumNucleons,theNeutronShells);
 }
 
-Shell Nucleus::GetShell(int NumNucleons,vector<Shell>& Shells){
+Shell* Nucleus::GetZShell(string name){
+  return GetShell(name,theProtonShells);
+}
+Shell *Nucleus::GetNShell(string name){
+  return GetShell(name ,theNeutronShells);
+}
+
+
+Shell *Nucleus::GetShell(int NumNucleons,vector<Shell>& Shells){
 
   int spot =-1;
   int total = 0;
@@ -281,7 +308,22 @@ Shell Nucleus::GetShell(int NumNucleons,vector<Shell>& Shells){
     throw "Crap";
   }
 
-  return Shells[spot];
+  return &Shells[spot];
+}
+
+Shell *Nucleus::GetShell(string name,vector<Shell>&Shells){
+  int spot=-1;
+  for (int i=0;i<Shells.size();i++){
+    if (Shells[i].GetName()==name){
+      spot=i;
+      i=Shells.size()+1;
+    }
+  }
+  if (spot==-1){
+    throw "crap";
+  }
+  return &Shells[spot];
+  
 }
 
 int Nucleus::GetShellIndex(int NumNucleons){
@@ -290,7 +332,7 @@ int Nucleus::GetShellIndex(int NumNucleons){
   // order where that shell is
 
 
-  Shell theShell = GetZShell(NumNucleons);//N vs Z here does not matter
+  Shell theShell = *GetZShell(NumNucleons);//N vs Z here does not matter
   int spot=-1;
   
   for (int i=0;i<theShellOrder.size();i++){
@@ -316,4 +358,125 @@ void Nucleus::DumpShellClosureMap(){
 
 
 
+}
+
+void Nucleus::DefineAbrevMap(){
+  AbrevMap["ac"]=89;
+  AbrevMap["al"]=13;
+  AbrevMap["am"]=95;
+  AbrevMap["sb"]=51;
+  AbrevMap["ar"]=18;
+  AbrevMap["as"]=33;
+  AbrevMap["at"]=85;
+  AbrevMap["ba"]=56;
+  AbrevMap["bk"]=97;
+  AbrevMap["be"]=4;
+  AbrevMap["bi"]=83;
+  AbrevMap["bh"]=107;
+  AbrevMap["b"]=5;
+  AbrevMap["br"]=35;
+  AbrevMap["cd"]=48;
+  AbrevMap["ca"]=20;
+  AbrevMap["cf"]=98;
+  AbrevMap["c"]=6;
+  AbrevMap["ce"]=58;
+  AbrevMap["cs"]=55;
+  AbrevMap["cl"]=17;
+  AbrevMap["cr"]=24;
+  AbrevMap["co"]=27;
+  AbrevMap["cu"]=29;
+  AbrevMap["cm"]=96;
+  AbrevMap["ds"]=110;
+  AbrevMap["db"]=105;
+  AbrevMap["dy"]=66;
+  AbrevMap["es"]=99;
+  AbrevMap["er"]=68;
+  AbrevMap["eu"]=63;
+  AbrevMap["fm"]=100;
+  AbrevMap["f"]=9;
+  AbrevMap["fr"]=87;
+  AbrevMap["gd"]=64;
+  AbrevMap["ga"]=31;
+  AbrevMap["ge"]=32;
+  AbrevMap["au"]=79;
+  AbrevMap["hf"]=72;
+  AbrevMap["hs"]=108;
+  AbrevMap["he"]=2;
+  AbrevMap["ho"]=67;
+  AbrevMap["h"]=1;
+  AbrevMap["in"]=49;
+  AbrevMap["i"]=53;
+  AbrevMap["ir"]=77;
+  AbrevMap["fe"]=26;
+  AbrevMap["kr"]=36;
+  AbrevMap["la"]=57;
+  AbrevMap["lr"]=103;
+  AbrevMap["pb"]=82;
+  AbrevMap["li"]=3;
+  AbrevMap["lu"]=71;
+  AbrevMap["mg"]=12;
+  AbrevMap["mn"]=25;
+  AbrevMap["mt"]=109;
+  AbrevMap["md"]=101;
+  AbrevMap["hg"]=80;
+  AbrevMap["mo"]=42;
+  AbrevMap["nd"]=60;
+  AbrevMap["ne"]=10;
+  AbrevMap["np"]=93;
+  AbrevMap["ni"]=28;
+  AbrevMap["nb"]=41;
+  AbrevMap["n"]=7;
+  AbrevMap["no"]=102;
+  AbrevMap["os"]=76;
+  AbrevMap["o"]=8;
+  AbrevMap["pd"]=46;
+  AbrevMap["p"]=15;
+  AbrevMap["pt"]=78;
+  AbrevMap["pu"]=94;
+  AbrevMap["po"]=84;
+  AbrevMap["k"]=19;
+  AbrevMap["pr"]=59;
+  AbrevMap["pm"]=61;
+  AbrevMap["pa"]=91;
+  AbrevMap["ra"]=88;
+  AbrevMap["rn"]=86;
+  AbrevMap["re"]=75;
+  AbrevMap["rh"]=45;
+  AbrevMap["rb"]=37;
+  AbrevMap["ru"]=44;
+  AbrevMap["rf"]=104;
+  AbrevMap["sm"]=62;
+  AbrevMap["sc"]=21;
+  AbrevMap["sg"]=106;
+  AbrevMap["se"]=34;
+  AbrevMap["si"]=14;
+  AbrevMap["ag"]=47;
+  AbrevMap["na"]=11;
+  AbrevMap["sr"]=38;
+  AbrevMap["s"]=16;
+  AbrevMap["ta"]=73;
+  AbrevMap["tc"]=43;
+  AbrevMap["te"]=52;
+  AbrevMap["tb"]=65;
+  AbrevMap["tl"]=81;
+  AbrevMap["th"]=90;
+  AbrevMap["tm"]=69;
+  AbrevMap["sn"]=50;
+  AbrevMap["ti"]=22;
+  AbrevMap["w"]=74;
+  AbrevMap["uub"]=112;
+  AbrevMap["uuh"]=116;
+  AbrevMap["uuo"]=118;
+  AbrevMap["uup"]=115;
+  AbrevMap["uuq"]=114;
+  AbrevMap["uus"]=117;
+  AbrevMap["uut"]=113;
+  AbrevMap["uuu"]=111;
+  AbrevMap["u"]=92;
+  AbrevMap["v"]=23;
+  AbrevMap["xe"]=54;
+  AbrevMap["yb"]=70;
+  AbrevMap["y"]=39;
+  AbrevMap["zn"]=30;
+  AbrevMap["zr"]=40;
 }
